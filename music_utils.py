@@ -315,9 +315,8 @@ def find_mode_range(df, final_value, voice_value, top_n=7):
         (df['Notes'] != 'Rest')
     ]
 
-    top_durations = filtered_df.groupby(['Title', 'Voice']).apply(
-        lambda x: x.nlargest(top_n, 'Percentage'), include_groups=False
-    ).reset_index(level=['Title', 'Voice']).reset_index(drop=True)
+    top_durations = filtered_df.groupby(['Title', 'Voice'], observed=True).apply(
+    lambda x: x.nlargest(top_n, 'Percentage'), include_groups=False).reset_index(level=['Title', 'Voice']).reset_index(drop=True)
 
     # Build note-position mapping
     base_notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'B-']
@@ -353,7 +352,7 @@ def find_mode_range(df, final_value, voice_value, top_n=7):
     top_durations['NotePosition'] = top_durations['Notes'].apply(get_note_position)
 
     result = []
-    for (title, voice), group in top_durations.groupby(['Title', 'Voice']):
+    for (title, voice), group in top_durations.groupby(['Title', 'Voice'], observed=True):
         if len(group) > 0:
             sorted_group = group.sort_values('NotePosition')
             lowest_note  = sorted_group.iloc[0]['Notes']
