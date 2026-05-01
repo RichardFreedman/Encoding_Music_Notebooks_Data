@@ -457,7 +457,15 @@ def voice_range_chart(corpus_pitch_data, recta_order, top_n=7):
         labels={'Title_Voice': 'Piece / Voice'}
     )
 
-    reference_points = ['D3', 'G3', 'D4', 'G4', 'D5', 'G5']
+    _ref_by_final = {
+        'D': ['D3', 'G3', 'D4', 'G4', 'D5', 'G5'],
+        'E': ['E3', 'C3', 'E4', 'C4', 'E5', 'C5'],
+        'F': ['C3', 'F3', 'C4', 'F4', 'C5', 'F5'],
+        'G': ['D3', 'G3', 'D4', 'G4', 'D5', 'G5'],
+        'A': ['E3', 'A3', 'E4', 'A4', 'E5', 'A5'],
+        'C': ['C3', 'G3', 'C4', 'G4', 'C5', 'G5'],
+    }
+    reference_points = _ref_by_final.get(final_value, ['D3', 'G3', 'D4', 'G4', 'D5', 'G5'])
     shapes = []
     annotations = []
     for point in reference_points:
@@ -546,6 +554,7 @@ def radar_note_plot(weighted_notes_df, pitch_class_order='Fifths',
         title=f'Weighted Note Distribution in Corpus ({pitch_class_order} order)'
     )
     fig.show()
+    fig.write_html("charts/radar_note_plot.html")
 
 
 def cadence_radar(cadences, tone_ordering='Thirds', limit_to_active=False):
@@ -588,7 +597,8 @@ def cadence_radar(cadences, tone_ordering='Thirds', limit_to_active=False):
         polar=dict(radialaxis=dict(visible=True, title='Percentage')),
         margin=dict(b=120)
     )
-    return fig
+    fig.show()
+    fig.write_html("charts/radar_cadence_plot.html")
 
 
 # =============================================================================
